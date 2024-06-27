@@ -37,6 +37,8 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        products.remove(id);
+        if (products.containsKey(id)) {
+            products.remove(id);
+        }
     }
 }
