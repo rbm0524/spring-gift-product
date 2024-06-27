@@ -29,6 +29,10 @@ public class ProductService {
     }
 
     public Product saveProduct(Product product) {
+        if (product.getId() != null && products.containsKey(product.getId())) {
+            return null;
+        }
+
         if (product.getId() == null) {
             product.setId(idCounter.incrementAndGet());
         }
