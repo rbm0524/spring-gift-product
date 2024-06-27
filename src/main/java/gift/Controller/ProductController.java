@@ -4,17 +4,12 @@ import gift.Model.Product;
 import gift.Service.ProductService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.util.List;
 
 @Controller
@@ -44,14 +39,6 @@ public class ProductController {
     public String createProduct(@ModelAttribute Product product) { //form의 데이터를 처리하기 위해
         productService.saveProduct(product);
         return "redirect:/api/products"; //redirection
-
-        /*
-        Product createdProduct = productService.saveProduct(product);
-        if(createdProduct == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 상품입니다.");
-        }
-        return ResponseEntity.ok(createdProduct);
-        */
     }
 
     @GetMapping("/api/products/update/{id}")
