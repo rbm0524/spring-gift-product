@@ -4,6 +4,7 @@ import gift.Model.Product;
 import gift.Service.ProductService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,8 +39,11 @@ public class Controller {
     }
 
     @PostMapping("/api/products/create")
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity createProduct(@RequestBody Product product) {
         Product createdProduct = productService.saveProduct(product);
+        if(createdProduct == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 상품입니다.");
+        }
         return ResponseEntity.ok(createdProduct);
     }
 
