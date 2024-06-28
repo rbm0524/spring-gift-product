@@ -22,6 +22,7 @@ public class ProductController {
         this.productService = productService;
     }
 
+
     @GetMapping("/api/products")
     public String getAllProducts(Model model) {
         List<Product> products = productService.getAllProducts();
@@ -49,14 +50,10 @@ public class ProductController {
     }
 
     @PostMapping("/api/products/update/{id}")
-    public String updateProduct(@PathVariable Long id,
-        @ModelAttribute Product productDetails) {
+    public String updateProduct(@PathVariable Long id, @ModelAttribute Product productDetails) {
         Optional<Product> optionalProduct = productService.getProductById(id);
         if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            product.setName(productDetails.getName());
-            product.setPrice(productDetails.getPrice());
-            productService.saveProduct(product);
+            productService.updateProduct(id, productDetails);
         }
         return "redirect:/api/products";
     }
