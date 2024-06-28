@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final Map<Long, Product> products = new HashMap<>();
     private final AtomicLong idCounter = new AtomicLong(); //thread-safe
 
     @Autowired
