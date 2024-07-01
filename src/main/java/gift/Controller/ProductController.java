@@ -3,13 +3,13 @@ package gift.Controller;
 import gift.Model.Product;
 import gift.Service.ProductService;
 import java.util.Optional;
+
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @Controller
@@ -30,32 +30,29 @@ public class ProductController {
         return "products";
     }
 
-    @GetMapping("/api/products/create")
-    public String showCreateProductForm(Model model) {
-        model.addAttribute("product", new Product());
-        return "product_form";
-    }
-
-    @PostMapping("/api/products/create")
-    public String createProduct(@ModelAttribute Product product) { //form의 데이터를 처리하기 위해
-        productService.saveProduct(product);
-        return "redirect:/api/products"; //redirection
-    }
-
-    @GetMapping("/api/products/update/{id}")
-    public String showUpdateProductForm(@PathVariable Long id, Model model) {
-        Optional<Product> optionalProduct = productService.getProductById(id);
-        model.addAttribute("product", optionalProduct.get());
-        return "update_form";
-    }
-
-    @PostMapping("/api/products/update/{id}")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute Product productDetails) {
-        Optional<Product> optionalProduct = productService.getProductById(id);
-        if (optionalProduct.isPresent()) {
-            productService.updateProduct(id, productDetails);
+    @RequestMapping(value = "/api/products/create", method = {RequestMethod.GET, RequestMethod.POST})
+    public String createProduct(@ModelAttribute Product product, Model model, HttpServletRequest request) {
+        if("GET".equalsIgnoreCase(request.getMethod())) {
+            return "product_form";
+        } else if("POST".equalsIgnoreCase(request.getMethod())) {
+            productService.saveProduct(product);
+            return "redirect:/api/products";
         }
-        return "redirect:/api/products";
+        return "error";
+    }
+
+    @RequestMapping(value = "/api/products/update/{id}", method = {RequestMethod.GET, RequestMethod.POST})
+    public String updateProductById(@PathVariable Long id, @ModelAttribute Product productDetails, HttpServletRequest request, Model model) {
+        if("GET".equalsIgnoreCase(request.getMethod())) {
+            Optional<Product> optionalProduct = productService.getProductById(id);
+            model.addAttribute("product", optionalProduct.get());
+            return "product_form";
+            //return "update_form";
+        } else if("POST".equalsIgnoreCase(request.getMethod())) {
+            productService.updateProduct(id, productDetails);
+            return "redirect:/api/products";
+        }
+        return "error";
     }
 
     @PostMapping("/api/products/delete/{id}")
