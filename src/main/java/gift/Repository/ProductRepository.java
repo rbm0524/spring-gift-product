@@ -13,12 +13,12 @@ import java.util.Optional;
 @Repository
 public class ProductRepository {
 
-    private final JdbcTemplate jdbcTemplate;
+        private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public ProductRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+        @Autowired
+        public ProductRepository(JdbcTemplate jdbcTemplate) {
+            this.jdbcTemplate = jdbcTemplate;
+        }
 
     @PostConstruct
     private void createProductTable() {
@@ -28,6 +28,7 @@ public class ProductRepository {
                 name varchar(255),
                 price double,
                 imageUrl varchar(1000),
+                isDeleted boolean default false,
                 primary key (id)
             )
             """;
@@ -35,7 +36,7 @@ public class ProductRepository {
     }
 
     public List<Product> findAllProduct() {
-        String query = "SELECT * FROM products";
+        String query = "SELECT * FROM products WHERE isDeleted=false";
         return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Product.class));
     }
 
@@ -49,10 +50,9 @@ public class ProductRepository {
         }
     }
 
-    public Product saveProduct(Product product) {
+    public void saveProduct(Product product) {
         String query = "INSERT INTO products (name, price, imageUrl) VALUES (?, ?, ?)";
         jdbcTemplate.update(query, product.getName(), product.getPrice(), product.getImageUrl());
-        return product;
     }
 
     public void updateProduct(Long id, Product productDetails) {
@@ -61,7 +61,7 @@ public class ProductRepository {
     }
 
     public void deleteProductById(Long id) {
-        String query = "DELETE FROM products WHERE id = ?";
+        String query = "UPDATE products SET isDeleted = true WHERE id = ?";
         jdbcTemplate.update(query, id);
     }
 }
