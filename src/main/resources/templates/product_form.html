@@ -8,7 +8,6 @@
 <body>
 <h1 th:text="${product.id} != null ? 'Edit Product' : 'Add Product'"></h1>
 <form th:action="${product.id} != null ? '/api/products/update/' + ${product.id} : '/api/products/create'" method="post">
-
   <input type="hidden" th:if="${product.id}" th:value="${product.id}" name="id" />
   <label for="name">Name:</label>
   <input type="text" id="name" name="name" th:value="${product.name}" required />
