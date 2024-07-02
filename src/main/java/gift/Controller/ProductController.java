@@ -31,10 +31,12 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/api/products/create", method = {RequestMethod.GET, RequestMethod.POST})
-    public String createProduct(@ModelAttribute Product product, Model model, HttpServletRequest request) {
+    public String createProduct(@ModelAttribute Product product, HttpServletRequest request, Model model) {
         if("GET".equalsIgnoreCase(request.getMethod())) {
+            model.addAttribute("product", new Product());
             return "product_form";
         } else if("POST".equalsIgnoreCase(request.getMethod())) {
+            model.addAttribute("product", product);
             productService.saveProduct(product);
             return "redirect:/api/products";
         }
@@ -47,7 +49,6 @@ public class ProductController {
             Optional<Product> optionalProduct = productService.getProductById(id);
             model.addAttribute("product", optionalProduct.get());
             return "product_form";
-            //return "update_form";
         } else if("POST".equalsIgnoreCase(request.getMethod())) {
             productService.updateProduct(id, productDetails);
             return "redirect:/api/products";
@@ -56,7 +57,9 @@ public class ProductController {
     }
 
     @PostMapping("/api/products/delete/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    public String deleteProduct(@PathVariable Long id, Model model) {
+        Optional<Product> optionalProduct = productService.getProductById(id);
+        model.addAttribute("product", optionalProduct.get());
         productService.deleteProduct(id);
         return "redirect:/api/products";  // 제품 목록 페이지로 리디렉션
     }
