@@ -6,13 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
-
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final AtomicLong idCounter = new AtomicLong(); //thread-safe
 
     @Autowired
     public ProductService(ProductRepository productRepository) {
@@ -27,9 +24,8 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public Product saveProduct(Product product) {
-        product.setId(idCounter.incrementAndGet());
-        return productRepository.saveProduct(product);
+    public void saveProduct(Product product) {
+        productRepository.saveProduct(product);
     }
 
     public void updateProduct(Long id, Product productDetails) {
@@ -38,6 +34,5 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         productRepository.deleteProductById(id);
-        idCounter.decrementAndGet();
     }
 }
